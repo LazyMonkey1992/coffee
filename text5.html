@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		.parent{
+			height: 200px;
+			border: 2px solid cyan;
+		}
+		.child{
+			width: 100px;
+			height: 100px;
+			background-color: blue;
+			color: white;
+			float: left;
+			margin:10px 0 0 10px;
+		}
+		body{
+			height: 400px;
+		}
+	</style>
+	<script>
+		window.onload=function(){
+			// 获取parent和child
+			var parent=document.querySelector('.parent');
+			var childs=document.querySelectorAll('.child');
+          // 将类数组转成数组
+			childs=Array.from(childs);
+ 
+			// 给每一个孩子节点绑定事件方法：
+			// childs.forEach(function(item){
+			// 	item.onclick=function(){
+			// 		parent.appendChild(this)
+			// 	}
+			// });
+ 
+ 
+			childs.forEach(function(item){
+				// 拖动事件 
+				// 开始拖动 on事件类型
+				item.ondragstart=function(event){
+					console.log('ondragstart开始拖动了');
+					// console.log(event,'事件对象');
+					// 将拖动元素的id传出去
+					// dataTransfer.setData 传输数据 参数(key value)
+					console.log(item.id);
+					event.dataTransfer.setData('id',item.id);
+				}
+				// 正在拖动
+				item.ondrag=function(){
+					console.log('ondrap正在拖动');
+				}
+				// 拖动结束
+				item.ondragend=function(){
+					console.log('ondragend拖动结束');
+				}
+			})
+ 
+ 
+			// 放置事件 --放置元素 parent
+			// 进入到放置元素
+			parent.ondragenter=function(){
+				console.log('ondragenter进入到放置元素');
+			}
+			// 在放置元素内移动
+			parent.ondragover=function(){
+				console.log('ondragover正在放置元素内移动');
+				// 将放置元素设置为可放置   取消默认 默认时不可放置
+				event.preventDefault();
+			}
+			// 将拖动元素放置到放置元素
+			parent.ondrop=function(event){
+				console.log('ondrop放置');
+				//获取拖动元素传输得数据getData(key)
+				// console.log(event.dataTransfer.getData('id'),'事件对象');
+				var id=event.dataTransfer.getData('id');
+				this.appendChild(document.querySelector('#'+id))
+				// 阻止事件冒泡
+				event.stopPropagation()
+			}
+			// 将拖动元素放置到body
+			document.body.ondragover=function(){
+				console.log('ondragover正在放置元素内移动');
+				// 将放置元素设置为可放置
+				event.preventDefault();
+			}
+			// 将拖动元素放置到放置元素
+			document.body.ondrop=function(event){
+				console.log('ondrop放置');
+				//获取拖动元素传输的数据getData(key)
+				// console.log(event.dataTransfer.getData('id'),'事件对象');
+				var id=event.dataTransfer.getData('id');
+				this.appendChild(document.querySelector('#'+id))
+				// 阻止事件冒泡
+				event.stopPropagation()
+			}
+			
+			
+		}
+	</script>
+</head>
+<body>
+	<!-- 放置元素:parent  放置事件:dragenter dragover drop-->
+	<!-- 拖动元素:child 拖动事件：dragstart drag dragend-->
+	<div class="parent"></div>
+	<!-- 设置当前元素可拖拽 draggable设置当前元素是否可拖拽 -->
+	<div class="child" id="one" draggable="true">one</div>
+	<div class="child" id="two" draggable="true">two</div>
+	<div class="child" id="three" draggable="true">three</div>
+	<div class="child" id="four" draggable="true">four</div>
+</body>
+</html>
